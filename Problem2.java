@@ -117,16 +117,16 @@ public class Problem2 {
             this.message = message;
         }
         public void moveEast(int y){
-            this.y = y--;
+            this.y++;
         }
         public void moveWest(int y){
-            this.y = y++;
+            this.y--;
         }
         public void moveNorth(int x){
-            this.x = x++;
+            this.x--;
         }
         public void moveSouth(int x){
-            this.x = x--;
+            this.x++;
         }
         public String toString(){
             return ": " + name + " at " + "(" + x + "," + y + "): ";
