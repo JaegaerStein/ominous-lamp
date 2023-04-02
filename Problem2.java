@@ -34,7 +34,7 @@ public class Problem2 {
                 }
             }
         }
-        
+
         int numberOfBottles = in.nextInt();
 
         ArrayList<Bottle> bottle = new ArrayList<>();
@@ -48,49 +48,66 @@ public class Problem2 {
             bottle.add(new Bottle(bottleName, message, x, y));
             System.out.println(bottleName + ": starting at (" + x + "," + y + ")");
         }
-        int moveCount = 0;
 
+        int moveCount = 0;
+        Queue<String> bottlePath = new LinkedList<>();
 
         while(true) {
-            boolean bottleLanded = true;
+            boolean allBottlesLanded = true;
 
             for (Bottle o : bottle) {
                 int x = o.getX();
                 int y = o.getY();
                 String position = map[x][y];
-                System.out.print(moveCount + o.toString());
-                if (position.equals("X")) {
+                String currentCoordinate = x + "," + y;
+
+                if (bottlePath.contains(currentCoordinate) && !o.isLanded()){
+                    System.out.print(moveCount + o.toString());
+                    System.out.println("<<NOW STUCK IN MID-OCEAN GYRE!>>");
+                    o.setLanded();
+                }
+                bottlePath.add(currentCoordinate);
+                //if bottle has moved onto land
+                if (position.equals("X") && !o.isLanded()) {
+                    o.setLanded();
+                    System.out.print(moveCount + o.toString());
                     System.out.println("LANDED!");
-                    System.out.println("<<" + o.getMessage() + ">>");
-                } else {
+                    System.out.println("<<MESSAGE RECEIVED: " + o.getMessage() + ">>");
+                } else if (!position.equals("X") && !o.isLanded()){
+                    System.out.print(moveCount + o.toString());
                     System.out.println("In ocean, current taking it " + position + ".");
-                    bottleLanded = false;
+                    allBottlesLanded = false;
+
+                    if (position.equals("N")) {
+                        o.moveNorth(o.getX());
+                    }
+                    if (position.equals("S")) {
+                        o.moveSouth(o.getX());
+                    }
+                    if (position.equals("E")) {
+                        o.moveEast(o.getY());
+                    }
+                    if (position.equals("W")) {
+                        o.moveWest(o.getY());
+                    }
                 }
-                if (position.equals("N")) {
-                    o.moveNorth(o.getX());
-                }
-                if (position.equals("S")) {
-                    o.moveSouth(o.getX());
-                }
-                if (position.equals("E")) {
-                    o.moveEast(o.getY());
-                }
-                if (position.equals("W")) {
-                    o.moveWest(o.getY());
-                }
+
             }
             moveCount++;
-            if (bottleLanded) {
+            if (allBottlesLanded) {
                 break;
             }
         }
     }
+
     public static class Bottle{
 
         private int x;
         private int y;
         private String name;
         private String message;
+
+        private boolean isLanded = false;
 
         public Bottle(String name, String message, int x, int y){
             this.name = name;
@@ -130,6 +147,12 @@ public class Problem2 {
         }
         public String toString(){
             return ": " + name + " at " + "(" + x + "," + y + "): ";
+        }
+        public void setLanded(){
+            this.isLanded = true;
+        }
+        public boolean isLanded(){
+            return this.isLanded;
         }
     }
 }
